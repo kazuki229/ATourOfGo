@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"golang.org/x/tour/pic"
+	"strings"
+)
+
+// golang.org/x/tour/picのようにgo
 
 // 構造体
 type Vertex struct {
@@ -93,19 +99,19 @@ func main() {
 
 	// スライスはlen(長さ)とcap(容量)を持つ
 	s3 := []int{2, 3, 5, 7, 11, 13}
-	printSlice(s3)
+	printSlice2(s3)
 
 	// Slice the slice to give it zero length.
 	s3 = s3[:0]
-	printSlice(s3)
+	printSlice2(s3)
 
 	// Extend its length.
 	s3 = s3[:4]
-	printSlice(s3)
+	printSlice2(s3)
 
 	// Drop its first two values.
 	s3 = s3[2:]
-	printSlice(s3)
+	printSlice2(s3)
 
 	// ズライスのゼロ値はnil
 	var s4 []int
@@ -146,8 +152,53 @@ func main() {
 	for i := 0; i < len(board); i++ {
 		fmt.Printf("%s\n", strings.Join(board[i], " "))
 	}
+
+	// Appending to slice
+	var s5 []int
+	printSlice2(s5) // lent=0 cap=0 []
+
+	s5 = append(s5, 0)
+	printSlice2(s5) // len=1 cap=1 [0]
+
+	s5 = append(s5, 1)
+	printSlice2(s5) // len=2 cap=2 [0 1]
+
+	// appendしたときにlenがcapを超えるとcapは元のcapの2倍となる
+	s5 = append(s5, 2, 3, 4)
+	printSlice2(s5) // len=5 cap=6 [0 1 2 3 4]
+
+	// Rance
+	var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+	// forループで利用するrangeはスライスやマップを一つずつ反復処理するために用いる
+	// スライスをrangeで繰り返す場合、1つめの変数i2はインデックス、v4はインデックスの場所の要素をコピーとなる
+	for i2, v4 := range pow {
+		fmt.Printf("2**%d = %d\n", i2, v4)
+	}
+
+	pow2 := make([]int, 10)
+	// インデックスだけ必要な場合はvalueを省略可能
+	for i3 := range pow2 {
+		pow2[i3] = 1 << uint(i3) // == 2**i
+	}
+
+	// valueのみ必要な場合はindexを_で置き換える
+	for _, value := range pow2 {
+		fmt.Printf("%d\n", value)
+	}
+
+	pic.Show(Pic)
+
 }
 
-func printSlice(s []int) {
+func printSlice(s string, x []int) {
+	fmt.Printf("%s len=%d cap=%d %v\n",
+		s, len(x), cap(x), x)
+}
+
+func printSlice2(s []int) {
 	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+
+func Pic(dx, dy int) [][]uint8 {
 }
