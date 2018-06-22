@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/tour/pic"
+	"math"
 	"strings"
 )
 
@@ -187,8 +187,79 @@ func main() {
 		fmt.Printf("%d\n", value)
 	}
 
-	pic.Show(Pic)
+	//pic.Show(Pic)
 
+	// Maps
+	// 連想配列
+	// [キーの型]値の型
+	var m map[string]Vertex2
+	// make関数は指定した型の初期化されたmapを返す
+	m = make(map[string]Vertex2)
+	m["Bell Labs"] = Vertex2{
+		40.68433, -74.39967,
+	}
+	fmt.Println(m["Bell Labs"])
+
+	// Map literals
+	// リテラルの場合はキーが必要
+	var m2 = map[string]Vertex2{
+		"Bell Labs": Vertex2{
+			40.68433, -74.39967,
+		},
+		"Google": Vertex2{
+			37.42202, -122.08408,
+		},
+	}
+	fmt.Println(m2)
+
+	// Map literals continued
+	// mapにわたすトップレベルの型が単純なものである場合、リテラルから型推定できるので型名を省略可能
+	var m3 = map[string]Vertex2{
+		"Bell Labs": {40.68433, -74.39967},
+		"Google":    {37.42202, -122.08408},
+	}
+	fmt.Println(m3)
+
+	// Mutating Maps
+	m4 := make(map[string]int)
+	// 要素の挿入
+	m4["Answer"] = 42
+	fmt.Println("The value: ", m4["Answer"]) // 42
+
+	// 要素の更新
+	m4["Answer"] = 48
+	fmt.Println("The value: ", m4["Answer"]) // 48
+
+	// 要素の削除
+	delete(m4, "Answer")
+	fmt.Println("The value: ", m4["Answer"]) // 0
+
+	// 要素の取得
+	// 2つめはキーが歩かないかをboolで返す
+	v5, ok := m4["Answer"]
+	fmt.Println("The value: ", v5, "Present?", ok) //0 false
+
+	// Exercise: Maps
+
+	// Function values
+	hypot := func(x, y float64) float64 {
+		return math.Sqrt(x*x + y*y)
+	}
+	fmt.Println(hypot(5, 12))
+	// 関数を変数として扱えるので、関数の引数に取れる
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
+
+	// Function Closures
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i),
+			neg(-2*i),
+		)
+	}
+
+	// Exercise: Fibonacci closure
 }
 
 func printSlice(s string, x []int) {
@@ -200,5 +271,22 @@ func printSlice2(s []int) {
 	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
 }
 
-func Pic(dx, dy int) [][]uint8 {
+//func Pic(dx, dy int) [][]uint8 {
+//	return
+//}
+
+type Vertex2 struct {
+	Lat, Long float64
+}
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
 }
